@@ -80,7 +80,6 @@ if __name__  =="__main__":
             end_location=command().lower()
             url = get_directions_url(start_location, end_location)
             wb.get().open(url)
-            speak(f'Đây là kết quả {search} trên google map')
         elif "thoát" in query:
             speak("bạn có thể gọi tôi bất cứ khi nào")
             quit()
