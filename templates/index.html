@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Web Recorder</title>
+    </head>
+    <body>
+        <h1>Web Recorder</h1>
+        <button id="startRecording">Start Recording</button>
+        <button id="stopRecording" disabled>Stop Recording</button>
+        <audio id="audioPlayer" controls></audio>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/recorderjs/0.1.0/recorder.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const startRecordingButton =
+                    document.getElementById("startRecording");
+                const stopRecordingButton =
+                    document.getElementById("stopRecording");
+                const audioPlayer = document.getElementById("audioPlayer");
+                let audioChunks = [];
+                let mediaRecorder;
+
+                navigator.mediaDevices
+                    .getUserMedia({ audio: true })
+                    .then(function (stream) {
+                        mediaRecorder = new MediaRecorder(stream);
+
+                        mediaRecorder.ondataavailable = function (e) {
+                            if (e.data.size > 0) {
+                                audioChunks.push(e.data);
+                            }
+                        };
+
+                        mediaRecorder.onstop = function () {
+                            console.log(audioChunks);
+                            const audioBlob = new Blob(audioChunks, {
+                                type: "audio/wav",
+                            });
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            audioPlayer.src = audioUrl;
+                        };
+                    })
+                    .catch(function (err) {
+                        console.error("Error accessing microphone:", err);
+                    });
+
+                startRecordingButton.addEventListener("click", function () {
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    startRecordingButton.disabled = true;
+                    stopRecordingButton.disabled = false;
+                });
+
+                stopRecordingButton.addEventListener("click", function () {
+                    mediaRecorder.stop();
+                    startRecordingButton.disabled = false;
+                    stopRecordingButton.disabled = true;
+                });
+            });
+        </script>
+    </body>
+</html>
