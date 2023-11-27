@@ -6,13 +6,15 @@ import playsound
 from gtts import gTTS
 from playsound import playsound
 import urllib.parse
+import os
 
 def speak(audio):
     print(audio)
     tts = gTTS(text =audio,lang='vi')
     tts.save("xinchao.mp3")
-    playsound("D:\\worksapce\\python\\aibot\\xinchao.mp3", True)
-    os.remove("D:\\worksapce\\python\\aibot\\xinchao.mp3")
+    file_path = os.path.join(".", "xinchao.mp3")
+    playsound(file_path, True)
+    os.remove(file_path)
    
 def time():
     Time=datetime.datetime.now().strftime("%I:%M:%p") 
@@ -29,7 +31,6 @@ def welcome():
         elif hour>=18 and hour<24:
             speak("Xin chào buổi tối!")
         speak("Xin chào, tôi có thể giúp gì cho bạn!") 
-
 
 def command():
     c=sr.Recognizer()
