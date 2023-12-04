@@ -26,7 +26,6 @@ def speak(audio):
 
 def get_audio(): 
     c=sr.Recognizer()
-    
     while True:
         with sr.Microphone() as microphone:
             c.pause_threshold = 1
@@ -80,13 +79,6 @@ def chat_gpt_run_time(prompt):
         max_tokens =1000  # Số từ tối đa trong câu trả lời
     )
     return response.choices[0].text.strip()
-
-def clean_text(raw_text):
-    # Loại bỏ Markdown và HTML
-    cleaned_text = re.sub(r'[*_`~]', '', raw_text)
-    cleaned_text = re.sub(r'\[.*?\]', '', cleaned_text)
-    cleaned_text = re.sub(r'<.*?>', '', cleaned_text)
-    return cleaned_text
 
 def get_time(text):
     now = datetime.datetime.now()
@@ -148,35 +140,35 @@ def open_application(text):
             
 def send_mail_user(name):
     file_path = os.path.join(".", "acquaintance.json")
-    with open(file_path, 'r', encoding='utf-8') as user_file:
+    with open(file_path, 'r', encoding='utf-8') as user_file: #                                  r là read
         try:
-            with open(file_path, 'r', encoding='utf-8') as user_file:
-                data = json.load(user_file)
-                users = data.get('user',[]) # nếu user không tồn tại thì giá trị của users là []
-                user_match = [user for user in users if user.get("name").lower() == name]
-                if(len(user_match) == 0): {
-                    speak("Tên người dùng của bạn nói chưa có trong danh sách thân thiết!")
-                }
-                else:
-                    email_user = [user.get('email') for user in user_match]
-                    speak('Nội dung bạn muốn gửi là gì')
-                    content = get_audio()
-                    mail = smtplib.SMTP('smtp.gmail.com', 587)
-                    mail.ehlo()
-                    mail.starttls()
-                    mail.login('truongsonpt.80@gmail.com', 'ybjmuwqxsohznaow')
-                    mail.sendmail('truongsonpt.80@gmail.com',
-                                email_user[0], content.encode('utf-8'))
-                    mail.close()
-                    speak('Email của bạn vùa được gửi. Bạn check lại email nhé')
+            data = json.load(user_file)
+            users = data.get('user',[]) # nếu user không tồn tại thì giá trị của users là []
+            user_match = [user for user in users if user.get("name").lower() == name]
+            if(len(user_match) == 0): {
+                speak("Tên người dùng của bạn nói chưa có trong danh sách thân thiết!")
+            }
+            else:
+                email_user = [user.get('email') for user in user_match]
+                speak('Nội dung bạn muốn gửi là gì')
+                content = get_audio()
+                mail = smtplib.SMTP('smtp.gmail.com', 587)
+                mail.ehlo()
+                mail.starttls()
+                mail.login('truongsonpt.80@gmail.com', 'ybjmuwqxsohznaow')
+                mail.sendmail('truongsonpt.80@gmail.com',
+                            email_user[0], content.encode('utf-8'))
+                mail.close()
+                speak('Email của bạn vùa được gửi. Bạn check lại email nhé')
         except Exception as e:
             print("Có lỗi xảy ra:"+ str(e))
 
 def play_music(mysong):
     while True:
-        result = YoutubeSearch(mysong, max_results=10).to_dict()
+        result = YoutubeSearch(mysong, max_results=10).to_dict() 
         if result:
             break
+        
     url = 'https://www.youtube.com' + result[0]['url_suffix']
     print(result[0])
     print(url)
@@ -219,7 +211,7 @@ def __main__():
             question = get_audio()
             result = chat_gpt_run_time(question)
             print(result)
-            speak(f"Kết quả của câu hỏi {question} là: {clean_text(result)}")
+            speak(f"Kết quả của câu hỏi {question} là: {result}")
         elif ("chỉ đường" in query):
             if("từ" in query and "đến" in query or "tới" in query or "đi" in query):
                 keyword_filter = "đến"

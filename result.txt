@@ -1,0 +1,4 @@
+[
+    {'title': 'Video 1', 'video_id': 'abcd1234', 'channel': 'Channel 1', 'duration': '3:45'},
+    {'title': 'Video 2', 'video_id': 'efgh5678', 'channel': 'Channel 2', 'duration': '5:12'},
+]
